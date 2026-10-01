@@ -1,0 +1,46 @@
+//@version=3
+study("magic tradez indicator", overlay = true)
+
+// 
+// author: magictradex (indebted to Kozlod)
+// date: 2019-05-25
+// https://www.tradingview.com/u/magictradez/
+// Pleaase see the instructions on how to best use it.
+//
+
+// Calculation HA Values 
+haopen   = 0.0
+haclose  = ((open + high + low + close)/4)
+haopen  := na(haopen[1]) ? (open + close)/2 : (haopen[1] + haclose[1]) / 2
+hahigh   = max(high, max(haopen, haclose))
+halow    = min(low,  min(haopen, haclose))
+
+// HA colors
+hacolor =  haclose  > haopen ? #3a85ad  : #b71c1c
+
+// Signals
+turnBlue = haclose  >  haopen and haclose[1] <= haopen[1]
+turnRed   = haclose  <= haopen and haclose[1]  > haopen[1]
+
+// Plotting
+plotshape(turnBlue, style = shape.circle,   location = location.belowbar, color = #3a85ad)
+plotshape(turnRed,   style = shape.square, location = location.abovebar, color = #b71c1c) 
+
+// Alerts
+alertcondition(turnBlue,  "ha_#3a85ad",  "ha_#3a85ad")
+alertcondition(turnRed,    "ha_#f44336",    "ha_#f44336")
+
+// MA's
+
+ma10 = close, ma10len = input(10, minval=1, title="MA10")
+ma20 = close, ma20len = input(20, minval=1, title="MA20")
+
+ma_10 = sma(ma10, ma10len)
+ma_20 = sma(ma20, ma20len)
+
+//spanColor = emaShort>=emaLong ? lime : red
+
+p10 = plot(ma_10, title="MA 10", style=line, linewidth=1, color=#3a85ad, transp=0)
+p20 = plot(ma_20, title="MA 20", style=line, linewidth=1, color=#b71c1c, transp=0)
+
+//fill(p1, p2, color=silver, transp=40, title="Fill")

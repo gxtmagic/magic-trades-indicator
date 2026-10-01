@@ -1,1 +1,0 @@
-# magic-trades-indicator
